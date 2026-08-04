@@ -124,7 +124,7 @@ rollback;
 
 
 
--- 07 savepoint - controlling transaction management
+-- 07 -> savepoint - controlling transaction management
 -- verify records
 select * from departments_copy order by department_id desc;
 
@@ -142,18 +142,34 @@ rollback to after_insert;
 
 
 
--- 
+-- 09 -> Statement-level rollback
+-- allows control of statements manually
+-- if a single DMl statement fills during execution, only that statement is rolled back
+--  the oracle server implements an implicit savepoint - handled by oracle
+-- all changes are retrived
+-- user should terminate transactions explicitly by executing a COMMIT or ROLLBACK statement
 
 
 
+-- 10 -> read consistency of data all the time prevents other users from viewing transactions in progress
+-- most database enviroments consist of a number of databases connected with many users at the same time  (changes or writing to database or selecting data or reading data )
+-- mechanism for all tranaction are not interfering with each other
+
+-- verify record
+select * from departments order by department_id desc;
+
+--change the department name
+update departments set department_name = 'product testing' where department_id =310;
+
+-- transaction in progress
+-- commit the update operation to the database
+commit;
+
+-- concurrency - many users connected to the same database 
 
 
-
-
-
-
-
-
-
-
-
+-- manual data locking
+-- making modifications to tables in oracle,
+-- the database engine acquires the necessary locks automatically to prevent collition of transactions between users
+-- high level of concurrency - same record at the same time
+-- appropriate lock, appropriate level and appropriate time
