@@ -154,7 +154,6 @@ rollback to after_insert;
 -- 10 -> read consistency of data all the time prevents other users from viewing transactions in progress
 -- most database enviroments consist of a number of databases connected with many users at the same time  (changes or writing to database or selecting data or reading data )
 -- mechanism for all tranaction are not interfering with each other
-
 -- verify record
 select * from departments order by department_id desc;
 
@@ -168,8 +167,29 @@ commit;
 -- concurrency - many users connected to the same database 
 
 
--- manual data locking
+
+-- 11 -> manual data locking
 -- making modifications to tables in oracle,
 -- the database engine acquires the necessary locks automatically to prevent collition of transactions between users
 -- high level of concurrency - same record at the same time
 -- appropriate lock, appropriate level and appropriate time
+-- FOR UPDATE statement and LOCK TABLE statement to override or guarantee the level of locking needed
+-- using the FOR UPDATE statement to guarantee locking of rows in a atable
+select employee_id, salary, commission_pct from employees where job_id = 'SA_REP' for update order by employee_id;
+
+--perform the UPDATE operation after the SELECT the lock is released with a ROLLBACK or COMIT statement
+rollback;
+
+--using the LOCK TABLE statement to lock the entire table
+lock table employees in exclusive mode nowait;
+-- sharable locks -- perform your operations. 
+-- lock is released with a ROLLBACK or COMMIT statemnet
+-- available modes:
+-- ROW SHARE(operates at row level within the table, permits concurrent access to lock table but prohibits users from locking the entire table for exclusive access), 
+-- ROW EXCLUSIVE(operates at row level within the  table, prohibits locking in SHARE mode),
+-- SHARE UPDATE(synanymous to row share, backwards compatible), 
+-- SHARE(selecting,viewing and permits concurrent queries on the table but prohibits update to the lock table), 
+-- SHARE ROW EXCLUSIVE(view, select concurrently prevents others from locking table in sharable mode or from updating rows they might want to update ),
+-- EXCLUSIVE(permits queries due to nochanges and prevents all other write operation - inserts, update, delete(safest))
+
+
