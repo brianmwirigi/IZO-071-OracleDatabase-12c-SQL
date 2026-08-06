@@ -116,10 +116,10 @@ delete from departments_copy;
 -- undo changes to database, rollbacks all changes made in a session
 rollback;
 
---commit transaction changes
+-- commit transaction changes
 commit;
 
---attemt to restore the record changes
+-- attemt to restore the record changes
 rollback;
 
 
@@ -134,7 +134,7 @@ insert into departments_copy values (310, 'quality control', null, null);
 -- create a savepoint to 'protect' the new reocrd
 savepoint after_insert;
 
---delete an existing record
+-- delete an existing record
 delete from departments_copy where department_id = 300;
  
 -- discard the delete operation without discarding the earlier insert operation 
@@ -145,7 +145,7 @@ rollback to after_insert;
 -- 09 -> Statement-level rollback
 -- allows control of statements manually
 -- if a single DMl statement fills during execution, only that statement is rolled back
---  the oracle server implements an implicit savepoint - handled by oracle
+-- the oracle server implements an implicit savepoint - handled by oracle
 -- all changes are retrived
 -- user should terminate transactions explicitly by executing a COMMIT or ROLLBACK statement
 
@@ -157,7 +157,7 @@ rollback to after_insert;
 -- verify record
 select * from departments order by department_id desc;
 
---change the department name
+-- change the department name
 update departments set department_name = 'product testing' where department_id =310;
 
 -- transaction in progress
@@ -168,7 +168,7 @@ commit;
 
 
 
--- 11 -> manual data locking
+-- 11 -> manual data locking - ensures dataconsistency
 -- making modifications to tables in oracle,
 -- the database engine acquires the necessary locks automatically to prevent collition of transactions between users
 -- high level of concurrency - same record at the same time
@@ -177,10 +177,10 @@ commit;
 -- using the FOR UPDATE statement to guarantee locking of rows in a atable
 select employee_id, salary, commission_pct from employees where job_id = 'SA_REP' for update order by employee_id;
 
---perform the UPDATE operation after the SELECT the lock is released with a ROLLBACK or COMIT statement
+-- perform the UPDATE operation after the SELECT the lock is released with a ROLLBACK or COMIT statement
 rollback;
 
---using the LOCK TABLE statement to lock the entire table
+-- using the LOCK TABLE statement to lock the entire table
 lock table employees in exclusive mode nowait;
 -- sharable locks -- perform your operations. 
 -- lock is released with a ROLLBACK or COMMIT statemnet
@@ -191,5 +191,44 @@ lock table employees in exclusive mode nowait;
 -- SHARE(selecting,viewing and permits concurrent queries on the table but prohibits update to the lock table), 
 -- SHARE ROW EXCLUSIVE(view, select concurrently prevents others from locking table in sharable mode or from updating rows they might want to update ),
 -- EXCLUSIVE(permits queries due to nochanges and prevents all other write operation - inserts, update, delete(safest))
+
+
+
+-- 12 -> EXERCISE: MANIPULATE DATA IN A TABLE
+-- insert a null value
+select * from departments;
+insert into departments values (400, 'king', null, 1800);
+
+
+--control transaction before commit through the use of SAVEPOINT statement
+savepoint after_null_value;
+-- delete an existing data
+delete form departments where department_id = 300;
+-- discard the delete operation wthout discarding the earlier insert operation
+rollback to after_insert;
+
+
+
+-- input of special value
+select * from employees ORDER by employee_id DESC;
+insert into employees (employee_id, first_name, last_name, email, phone_number, hire_date, Job_id, salary, commission_pct, manager_id, department_id)  values (400, 'Brian','mwirigi' ,'bmmaingi', '0125478', SYSDATE,'AD_PRES',2500,null,null,60);
+
+
+
+--using COMMIT and ROLLBACK
+select * from departments;
+-- deleting all records form tablr
+delete from departmets
+-- undo the delete operation
+rollback;
+-- commit the delete operation
+commit;
+
+
+--change data using the updating statement  -- must include WHERE cluase to specifiy the row to update 
+update departments set department_name = 'research and developemt' where department_id =300;
+--view table
+select * from departments order by department_id desc;
+
 
 
