@@ -113,6 +113,7 @@ select employee_id, last_name AS "name", salary "monthly salary",salary * 12"ann
 -- 07 -> concatenation operator
 -- commonly used with text or character columns. can be used in numeric column
 -- it is simply taking one column and attaching it to another column or combining more than two column together to from one single value
+
 -- use two vertical bars (pipe character) to "attach two or more columns together into a single result"
 select employee_id, last_name || job_id AS "employee position" from employees;
 
@@ -123,8 +124,8 @@ select employee_id || manager_id || department_id AS "employee code" from employ
 
 -- 08 -> Literal character strings
 -- enhancement of query results especially when using concatenation by using literal characters -included in the resultset
--- defnined in single quotes (along with concatenation) to enhace formatting
 
+-- defnined in single quotes (along with concatenation) to enhace formatting
 select employee_id ,first_name || ' ' || last_name as "full Name" from employees;
 
 select employee_id, first_name || ', ' || last_name as "full name" from employees order by "full name";
@@ -135,17 +136,66 @@ select 'Employee: ' || last_name || ', ' || first_name || ' -> Position: ' || jo
 
 
 -- 09 -> WHERE clause (common operator)
--- used as a filter to restrict the records that are returned
--- without a where clause, oracle returns every record from any given table or collection of tables, against which is being queried
+-- used as a filter to restrict the records that are returned and not view every record
+-- without a where clause, oracle returns all/every record from any given table or collection of tables, against which is being queried
+-- complicate criteria statement sych as issue multiple statements of criteria  (must meet and this condition , and this, and this , or that , or that )
+
+-- find aall employees with a salary of greater than $10000
+select * from employees where salary >= 10000;
+
+-- find all employees with a  salary of greater than or equal to $10000 but less than or equal to $20000
+select * from employees where salary >= 10000 and salary <= 20000 ; -- must indicate column name when using add
+-- could be re-writen as BETWEEN 10000 and 20000
+select * from employees where salary BETWEEN 10000 AND  20000 ;
+
+-- find employees with a specific last name
+select * from employees where last_name ='King'; --characters neeed to be delimited using single quote. numbers dont need quotes
+
+-- find employees who were hired in the year 2007
+select * from employees where hire_date between '1-01-2007' and '12-31-2007';-- it includes both the specified values from both ends of the filter
+
+-- find employees who were hired any time on or after january 1st, 2008
+select * from employees where hire_date >= '01-01-2008';  --use of numeric operators (><=) against character based data ('brian','2007-10-01')
 
 
 
+-- 10 -> duplicate rows
+-- output of same value multiple times is okay but seeing the same value over and over resulting in confussion
+
+--removing duplicate values from results by using DISTINCT keyword
+select distinct department_id from employees order by department_id;
 
 
 
+-- 11 -> Displaying table structure
+-- view design of table using the DESCRIBE keyword to ascertain the properties of a table and populate the selct statement
+-- used for where cluase particularly in respect to the comparison operators (numeric vs character based comparision)
+-- function
+describe employees;
 
 
 
+-- 12 -> EXERCIVE: retriving data using SQL statement
+
+--Describe and use the basic SELECT statement
+describe jobs;
+select hire_date from employees;
+select * from jobs;
+
+-- apply standard order of precedence in SQL arithmetic expresssions
+select 'old salary '|| min_salary , Min_salary + 20 * 12 AS "salary increment" from jobs;
+select 'old salary '|| min_salary , (Min_salary + 20 ) * 12 AS "New Annual Salary" from jobs;
+
+-- use literal character string in a select statement
+-- to concatinate and use alias in the select statement
+select 'Employee: ' || LAST_NAME || ',' || FIRST_NAME || ' -> POSITION :'|| JOB_ID AS "Employee Details" from employees;
+
+--descibe when to use the where clause
+-- filter out data that is not needed
+select * from employees where hire_date >= '1/1/2000' order by employee_id;
+
+-- eliminate duplicate rows drom sql statement output using the distinct qualifier
+select distinct manager_id from employees;
 
 
 
