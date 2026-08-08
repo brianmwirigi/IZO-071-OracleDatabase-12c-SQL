@@ -111,6 +111,37 @@ select employee_id, last_name AS "name", salary "monthly salary",salary * 12"ann
 
 
 -- 07 -> concatenation operator
+-- commonly used with text or character columns. can be used in numeric column
+-- it is simply taking one column and attaching it to another column or combining more than two column together to from one single value
+-- use two vertical bars (pipe character) to "attach two or more columns together into a single result"
+select employee_id, last_name || job_id AS "employee position" from employees;
+
+--concatenate multiple columns together to produce a new value 
+select employee_id || manager_id || department_id AS "employee code" from employees;
+
+
+
+-- 08 -> Literal character strings
+-- enhancement of query results especially when using concatenation by using literal characters -included in the resultset
+-- defnined in single quotes (along with concatenation) to enhace formatting
+
+select employee_id ,first_name || ' ' || last_name as "full Name" from employees;
+
+select employee_id, first_name || ', ' || last_name as "full name" from employees order by "full name";
+
+-- literal character cana also begin the select list
+select 'Employee: ' || last_name || ', ' || first_name || ' -> Position: ' || job_id as "employee Details" from employees;
+
+
+
+-- 09 -> WHERE clause (common operator)
+-- used as a filter to restrict the records that are returned
+-- without a where clause, oracle returns every record from any given table or collection of tables, against which is being queried
+
+
+
+
+
 
 
 
